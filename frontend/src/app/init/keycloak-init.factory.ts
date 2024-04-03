@@ -6,11 +6,12 @@ export function initializeKeycloak(keycloak: KeycloakService) {
       config: {
         url: 'http://localhost:8080',
         realm: 'game-backlog',
-        clientId: 'gamebacklog-spa',
+        clientId: 'gamebacklog-app',
       },
       enableBearerInterceptor: true,
       bearerPrefix: 'Bearer',
       bearerExcludedUrls: ['/assets'],
+      loadUserProfileAtStartUp: true,
       initOptions: {
         pkceMethod: 'S256',
         onLoad: 'check-sso',
