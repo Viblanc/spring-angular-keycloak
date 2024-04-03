@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: game-backlog
+  datasource:
+    url: jdbc:postgresql://localhost:5432/backlogdb
+    username: frieren
+    password: slayer
+  jpa:
+    hibernate:
+      ddl-auto: create
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/game-backlog
+          jwk-set-uri: http://localhost:8080/realms/game-backlog/protocol/openid-connect/certs
+  output:
+    ansi:
+      enabled: always
+
+  jwt:
+    auth:
+      converter:
+        resource-id: gamebacklog-app
+        principal-attribute: preferred_username
+
+app:
+  igdb:
+    clientId: ${CLIENT_ID}
+    clientSecret: ${CLIENT_SECRET}
+  cors:
+    allowed-origins: http://localhost:4200
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+server:
+  port: 9000

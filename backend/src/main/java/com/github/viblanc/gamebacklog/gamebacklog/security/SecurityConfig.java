@@ -21,16 +21,17 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtAuthConverter jwtAuthConverter;
     @Value("${app.cors.allowed-origins}")
-    private final List<String> allowedOrigins;
+    private List<String> allowedOrigins;
+    public static final String ADMIN = "admin";
+    public static final String USER = "user";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authz -> authz.anyRequest().authenticated())
-                .oauth2ResourceServer(oauth -> oauth.jwt(jwtConfigurer ->
-                    jwtConfigurer.jwtAuthenticationConverter(jwtAuthConverter)
-                ))
+        http.authorizeHttpRequests((authz) -> authz
+                .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthConverter)))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         return http.build();
