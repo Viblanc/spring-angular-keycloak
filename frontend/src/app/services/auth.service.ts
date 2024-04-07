@@ -1,11 +1,18 @@
 import { Injectable } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
+import { KeycloakEventType, KeycloakService } from 'keycloak-angular';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private readonly keycloak: KeycloakService) {}
+  isLoggedIn$ = new BehaviorSubject<boolean>(false);
+  username$ = new BehaviorSubject<string>('');
+  constructor(private readonly keycloak: KeycloakService) {
+    this.getUsername();
+    this.isLoggedIn();
+  }
 
   login(): void {
     this.keycloak.login();
@@ -15,11 +22,17 @@ export class AuthService {
     this.keycloak.logout();
   }
 
-  getUsername(): string {
-    return this.keycloak.getUsername();
+  getUsername(): void {
+    this.isLoggedIn$.subscribe({
+      next: (val) => {
+        if (val) {
+          this.username$.next(this.keycloak.getUsername());
+        }
+      },
+    });
   }
 
-  isLoggedIn(): boolean {
-    return this.keycloak.isLoggedIn();
+  isLoggedIn(): void {
+    this.isLoggedIn$.next(this.keycloak.isLoggedIn());
   }
 }
