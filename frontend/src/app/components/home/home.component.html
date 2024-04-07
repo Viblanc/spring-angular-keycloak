@@ -1,0 +1,27 @@
+<div *ngIf="(this.authService.isLoggedIn$ | async); else elseBlock">
+
+  <form
+    class="mt-10 mx-auto max-w-xl py-2 px-6 rounded-md bg-gray-50 border flex focus-within:border-gray-300 text-2xl">
+    <input type="text" placeholder="Search for games..." [(ngModel)]="gameName" (keyup)="search()"
+      class="bg-transparent w-full focus:outline-none pr-4 font-semibold border-0 focus:ring-0 px-0 py-0" name="topic">
+  </form>
+  <div class="grid grid-cols-3 gap-10 m-10 px-4 justify-items-center content-center">
+    <div *ngFor="let game of games; index as i" class="my-8 rounded-t max-w-96 duration-500 hover:scale-105">
+      <div class="rounded-xl shadow-xl">
+        <img class="rounded-t-xl object-cover" [src]="game.coverUrl" />
+        <div class="line-clamp-6 mx-4 my-2">
+          <h2 class="text-xl font-bold text-wrap">{{game.name}}</h2>
+          <p class="text-base text-gray-600 mt-1">{{game.summary}}</p>
+        </div>
+        <div class="mx-4 my-2">
+          <span *ngFor="let plat of game.platforms"
+            class="inline-block text-sm font-bold py-1 px-3 mr-2 my-2 bg-gray-200 text-gray-700 rounded-full">
+            {{plat.abbreviation || plat.alternativeName || plat.name}}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #elseBlock>Login now to manage your game backlog !</ng-template>
