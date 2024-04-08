@@ -1,0 +1,26 @@
+<div class="flex flex-row h-96 m-auto rounded-lg">
+  <img class="object-cover rounded-none rounded-s-lg" [src]="game.coverUrl" alt="game cover">
+  <div class="flex flex-col justify-between p-4 leading-normal">
+    <h3 class="mb-2 text-3xl font-bold tracking-tight text-gray-900">{{game.name}}</h3>
+    <ul class="list-none">
+      <li class="mb-3 font-normal text-gray-700">
+        <p class="font-bold">Summary :</p>
+        {{game.summary}}
+      </li>
+      <li class="mb-3 font-normal text-gray-700">
+        <p class="font-bold">Release date :</p>
+        {{game.releaseDate | date:'dd/MM/YYYY'}}
+      </li>
+      <li class="mb-3 font-normal text-gray-700">
+        <p class="font-bold">Platforms :</p>
+        <div class="my-2">
+          <span *ngFor="let plat of game.platforms"
+            class="inline-block text-sm font-bold py-1 px-3 mr-2 my-2 bg-gray-200 text-gray-700 rounded-full">
+            {{plat.abbreviation || plat.alternativeName || plat.name}}
+          </span>
+        </div>
+      </li>
+    </ul>
+    <ng-content></ng-content>
+  </div>
+</div>
