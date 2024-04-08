@@ -19,4 +19,8 @@ export class GameService {
       `http://localhost:9000/api/games/search?query=${query}`
     );
   }
+
+  addGame(game: Game): Observable<Game[]> {
+    return this.http.post<Game[]>('http://localhost:9000/api/games/add', game);
+  }
 }
