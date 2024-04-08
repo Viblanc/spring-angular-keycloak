@@ -32,7 +32,8 @@ export class AuthService {
     });
   }
 
-  isLoggedIn(): void {
+  isLoggedIn(): boolean {
     this.isLoggedIn$.next(this.keycloak.isLoggedIn());
+    return this.keycloak.isLoggedIn();
   }
 }
