@@ -1,5 +1,20 @@
 <div *ngIf="(this.authService.isLoggedIn$ | async); else elseBlock">
-
+  <app-modal #dialog>
+    <app-game #game [game]="(modalGame$ | async) ?? {}">
+      <div class="flex items-center justify-end p-2 border-t border-solid border-blueGray-200 rounded-b">
+        <button
+          class="bg-red-400 text-white active:bg-red-700 font-bold uppercase px-6 py-3 rounded text-sm outline-none focus:outline-none mr-1 ease-linear transition-colors hover:bg-red-500 duration-300"
+          type="button" (click)="dialog.closeModal()">
+          Close
+        </button>
+        <button
+          class="bg-emerald-500 text-white active:bg-emerald-700 font-bold uppercase text-sm px-6 py-3 rounded outline-none focus:outline-none mr-1 ease-linear hover:bg-emerald-600 transition-colors duration-300"
+          type="button" (click)="dialog.closeModal(); addToList(game.game)">
+          Add to list
+        </button>
+      </div>
+    </app-game>
+  </app-modal>
   <form
     class="mt-10 mx-auto max-w-xl py-2 px-6 rounded-md bg-gray-50 border flex focus-within:border-gray-300 text-2xl">
     <input type="text" placeholder="Search for games..." [(ngModel)]="gameName" (keyup)="search()"
@@ -7,7 +22,8 @@
   </form>
   <div class="grid grid-cols-3 gap-10 m-10 px-4 justify-items-center content-center">
     <div *ngFor="let game of games; index as i"
-      class="my-8 rounded-t max-w-96 duration-500 hover:scale-105 cursor-pointer" (click)="toggleModal(game)">
+      class="my-8 rounded-t max-w-96 duration-500 hover:scale-105 cursor-pointer"
+      (click)="dialog.openModal(); modalGame$.emit(game)">
       <div class="rounded-xl shadow-xl">
         <img class="rounded-t-xl object-cover" [src]="game.coverUrl" />
         <div class="line-clamp-1 mx-4 my-2">
@@ -23,26 +39,5 @@
     </div>
   </div>
 </div>
-<div *ngIf="showModal"
-  class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex flex-col">
-  <div class="bg-white w-2/3 flex flex-col m-auto rounded-lg">
-    <app-game [game]="this.modalGame!"
-      class="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none">
-      <div class="flex items-center justify-end p-2 border-t border-solid border-blueGray-200 rounded-b">
-        <button
-          class="bg-red-400 text-white active:bg-red-700 font-bold uppercase px-6 py-3 rounded text-sm outline-none focus:outline-none mr-1 ease-linear transition-colors hover:bg-red-500 duration-300"
-          type="button" (click)="toggleModal({})">
-          Close
-        </button>
-        <button
-          class="bg-emerald-500 text-white active:bg-emerald-700 font-bold uppercase text-sm px-6 py-3 rounded outline-none focus:outline-none mr-1 ease-linear hover:bg-emerald-600 transition-colors duration-300"
-          type="button" (click)="addToList()">
-          Add to list
-        </button>
-      </div>
-    </app-game>
-  </div>
-</div>
-<div *ngIf="showModal" class="opacity-50 fixed inset-0 z-40 bg-black"></div>
 
 <ng-template #elseBlock>Login now to manage your game backlog !</ng-template>
