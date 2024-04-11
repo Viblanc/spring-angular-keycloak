@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
@@ -17,9 +17,10 @@ import { ModalComponent } from '../modal/modal.component';
 })
 export class HomeComponent implements OnInit {
   games: Game[] = [];
-  modalGame$ = new EventEmitter<Game>();
   gameName: string = '';
   private query$ = new Subject<string>();
+  modalGame$ = new Subject<Game>();
+  isLoading = false;
 
   constructor(
     protected readonly authService: AuthService,
@@ -35,17 +36,19 @@ export class HomeComponent implements OnInit {
       )
       .subscribe({
         next: (games) => {
-          console.log(games);
           this.games = games;
+          this.isLoading = false;
         },
         error: (err) => {
           console.log(err);
+          this.isLoading = false;
         },
       });
   }
 
   search(): void {
     this.query$.next(this.gameName);
+    this.isLoading = true;
   }
 
   addToList(game: Game): void {
