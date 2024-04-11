@@ -23,4 +23,11 @@ export class GameService {
   addGame(game: Game): Observable<Game[]> {
     return this.http.post<Game[]>('http://localhost:9000/api/games/add', game);
   }
+
+  updateGame(game: UserGame): Observable<UserGame> {
+    return this.http.put<UserGame>(
+      `http://localhost:9000/api/games/${game.game.id}`,
+      game
+    );
+  }
 }
