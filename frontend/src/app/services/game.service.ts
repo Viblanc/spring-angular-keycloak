@@ -30,4 +30,8 @@ export class GameService {
       game
     );
   }
+
+  removeGame(gameId: number): Observable<void> {
+    return this.http.delete<void>(`http://localhost:9000/api/games/${gameId}`);
+  }
 }

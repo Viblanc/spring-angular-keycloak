@@ -52,4 +52,16 @@ export class GameListComponent implements OnInit {
       },
     });
   }
+
+  removeGame(game: UserGame): void {
+    const id = game.game.id!;
+    this.gameService.removeGame(id).subscribe({
+      next: () => {
+        this.games = this.games.filter((g) => g.game.id !== id);
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
 }

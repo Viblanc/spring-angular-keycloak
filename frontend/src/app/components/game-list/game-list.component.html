@@ -32,6 +32,13 @@
           </svg>
         </label>
       </li>
+      <li class="inline-flex py-3 px-10 text-base font-bold bg-white text-gray-800">
+        <button
+          class="bg-red-400 text-white active:bg-red-700 font-bold uppercase px-6 py-3 rounded text-sm outline-none focus:outline-none mr-1 ease-linear transition-colors hover:bg-red-500 duration-300"
+          type="button" (click)="removeGame(game)">
+          Remove
+        </button>
+      </li>
     </ul>
   </app-game>
 </div>

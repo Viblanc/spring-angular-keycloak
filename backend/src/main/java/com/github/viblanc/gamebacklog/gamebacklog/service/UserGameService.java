@@ -20,4 +20,8 @@ public class UserGameService {
     public UserGame save(UserGame userGame) {
         return repository.save(userGame);
     }
+
+    public void delete(UserGame userGame) {
+        repository.delete(userGame);
+    }
 }

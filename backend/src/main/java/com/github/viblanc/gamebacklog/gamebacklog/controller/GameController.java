@@ -77,4 +77,13 @@ public class GameController {
                     return ResponseEntity.ok(UserGameMapper.toDto(userGameService.save(userGame)));
                 }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteGame(Principal principal, @PathVariable Long id) {
+        return userGameService.findById(new UserGameId(principal.getName(), id))
+                .map(userGame -> {
+                    userGameService.delete(userGame);
+                    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+                }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 }
