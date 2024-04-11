@@ -32,7 +32,10 @@ export class HomeComponent implements OnInit {
       .pipe(
         debounceTime(500),
         distinctUntilChanged(),
-        switchMap((query) => this.gameService.search(query))
+        switchMap((query) => {
+          this.isLoading = true;
+          return this.gameService.search(query);
+        })
       )
       .subscribe({
         next: (games) => {
@@ -48,7 +51,6 @@ export class HomeComponent implements OnInit {
 
   search(): void {
     this.query$.next(this.gameName);
-    this.isLoading = true;
   }
 
   addToList(game: Game): void {
