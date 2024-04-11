@@ -3,14 +3,15 @@ package com.github.viblanc.gamebacklog.gamebacklog.controller;
 import com.github.viblanc.gamebacklog.gamebacklog.dto.GameDto;
 import com.github.viblanc.gamebacklog.gamebacklog.dto.UserGameDto;
 import com.github.viblanc.gamebacklog.gamebacklog.mapper.GameMapper;
+import com.github.viblanc.gamebacklog.gamebacklog.mapper.UserGameMapper;
 import com.github.viblanc.gamebacklog.gamebacklog.mapper.UserMapper;
 import com.github.viblanc.gamebacklog.gamebacklog.model.User;
 import com.github.viblanc.gamebacklog.gamebacklog.model.UserGame;
 import com.github.viblanc.gamebacklog.gamebacklog.model.UserGameId;
-import com.github.viblanc.gamebacklog.gamebacklog.repository.UserGameRepository;
 import com.github.viblanc.gamebacklog.gamebacklog.service.GameService;
 import com.github.viblanc.gamebacklog.gamebacklog.service.IGDBApiService;
 import com.github.viblanc.gamebacklog.gamebacklog.model.Game;
+import com.github.viblanc.gamebacklog.gamebacklog.service.UserGameService;
 import com.github.viblanc.gamebacklog.gamebacklog.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ import java.util.Optional;
 public class GameController {
     private final UserService userService;
     private final GameService gameService;
-    private final UserGameRepository userGameRepository;
+    private final UserGameService userGameService;
     private final IGDBApiService igdbApiService;
 
     @GetMapping
@@ -61,7 +62,19 @@ public class GameController {
                 .favourite(false)
                 .rating(-1)
                 .build();
-        userGameRepository.save(userGame);
+        userGameService.save(userGame);
         return ResponseEntity.ok(UserMapper.toDto(currentUser).getGames());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserGameDto> updateGame(Principal principal, @PathVariable Long id,
+                                                  @Valid @RequestBody UserGameDto userGameDto) {
+       return userGameService.findById(new UserGameId(principal.getName(), id))
+                .map(userGame -> {
+                    userGame.setCompleted(userGameDto.isCompleted());
+                    userGame.setFavourite(userGameDto.isFavourite());
+                    userGame.setRating(userGameDto.getRating());
+                    return ResponseEntity.ok(UserGameMapper.toDto(userGameService.save(userGame)));
+                }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }
