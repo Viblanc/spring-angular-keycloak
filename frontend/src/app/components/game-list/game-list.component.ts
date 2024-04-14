@@ -15,6 +15,12 @@ export class RangeNumber implements PipeTransform {
   }
 }
 
+enum Selection {
+  All,
+  Not_Completed,
+  Favourite,
+}
+
 @Component({
   selector: 'app-game-list',
   standalone: true,
@@ -24,6 +30,8 @@ export class RangeNumber implements PipeTransform {
 })
 export class GameListComponent implements OnInit {
   games: UserGame[] = [];
+  selectedGames: UserGame[] = [];
+  selection: typeof Selection = Selection;
   constructor(private gameService: GameService) {}
 
   ngOnInit(): void {
@@ -38,11 +46,25 @@ export class GameListComponent implements OnInit {
             return 0;
           }
         });
+        this.selectedGames = this.games;
       },
       error: (err) => {
         console.error(err);
       },
     });
+  }
+
+  setSelection(sel: Selection) {
+    switch (sel) {
+      case Selection.Favourite:
+        this.selectedGames = this.games.filter((g) => g.favourite);
+        break;
+      case Selection.Not_Completed:
+        this.selectedGames = this.games.filter((g) => !g.completed);
+        break;
+      default:
+        this.selectedGames = this.games;
+    }
   }
 
   updateGame(game: UserGame): void {
@@ -58,6 +80,7 @@ export class GameListComponent implements OnInit {
     this.gameService.removeGame(id).subscribe({
       next: () => {
         this.games = this.games.filter((g) => g.game.id !== id);
+        this.selectedGames = this.selectedGames.filter((g) => g.game.id !== id);
       },
       error: (err) => {
         console.error(err);

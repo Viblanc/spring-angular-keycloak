@@ -1,0 +1,15 @@
+#all:checked ~ div {
+  --tw-translate-x: 0%;
+}
+
+#not-completed:checked ~ div {
+  --tw-translate-x: 100%;
+}
+
+#favourite:checked ~ div {
+  --tw-translate-x: -100%;
+}
+
+#favourite:checked label {
+  font-weight: 700;
+}

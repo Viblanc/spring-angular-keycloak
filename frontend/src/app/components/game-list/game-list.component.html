@@ -1,18 +1,40 @@
-<div class="flex flex-col mt-8 w-2/3 m-auto items-center ">
-  <app-game *ngFor="let game of games" [game]="game.game"
+<div class="flex flex-col mt-8 w-2/3 m-auto items-center">
+  <div class="flex items-center justify-center w-2/3 px-1 bg-gray-100 rounded-lg">
+    <div class="flex w-full relative items-center justify-center bg-transparent rounded-lg text-gray-800">
+      <input type="radio" id="favourite" name="tabs" class="appearance-none"
+        (click)="setSelection(selection.Favourite)" />
+      <label for="favourite"
+        class="cursor-pointer w-1/3 flex items-center justify-center select-none font-semibold text-lg rounded-lg py-2 z-20">Favourite</label>
+      <input type="radio" id="all" name="tabs" class="appearance-none" (click)="setSelection(selection.All)" />
+      <label for="all"
+        class="cursor-pointer w-1/3 flex items-center justify-center select-none font-semibold text-lg rounded-lg py-2 z-20">All</label>
+      <input type="radio" id="not-completed" name="tabs" class="appearance-none"
+        (click)="setSelection(selection.Not_Completed)" />
+      <label for="not-completed"
+        class="cursor-pointer w-1/3 flex items-center justify-center select-none font-semibold text-lg rounded-lg py-2 z-20">Not
+        completed</label>
+      <div
+        class="w-1/3 h-5/6 flex items-center justify-center select-none font-semibold text-lg rounded-lg m-2 bg-white absolute transform transition-transform z-10">
+      </div>
+    </div>
+  </div>
+
+  <app-game *ngFor="let game of selectedGames" [game]="game.game"
     class="rounded-lg shadow-lg bg-white border border-gray-200 relative flex flex-col w-full my-4 hover:-translate-y-1 duration-500 ease-in-out">
-    <ul class="flex">
-      <li class="inline-flex items-center gap-x-2.5 py-3 pr-4 text-base font-bold bg-white text-gray-800">
-        Rating:
-        <select id="countries" [(ngModel)]="game.rating" (ngModelChange)="updateGame(game)"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-          @for (rating of 10 | rangeNumber; track rating) {
-          <option [ngValue]="rating" [selected]="rating === game.rating">{{rating}}</option>
-          }
-          <option [defaultSelected]="game.rating === -1" [ngValue]="-1">Not rated yet</option>
-        </select>
+    <ul class="flex flex-row justify-stretch items-center rounded-lg py-2 border border-gray-300">
+      <li class="flex-grow py-3 text-base font-bold bg-white text-gray-800">
+        <div class="inline-flex items-center">
+          <label for="countries" class="px-2">Rating:</label>
+          <select id="countries" [(ngModel)]="game.rating" (ngModelChange)="updateGame(game)"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+            @for (rating of 10 | rangeNumber; track rating) {
+            <option [ngValue]="rating" [selected]="rating === game.rating">{{rating}}</option>
+            }
+            <option [defaultSelected]="game.rating === -1" [ngValue]="-1">Not rated yet</option>
+          </select>
+        </div>
       </li>
-      <li class="inline-flex items-center gap-x-2.5 py-3 px-4 text-base font-bold bg-white text-gray-800">
+      <li class="flex-grow py-3 text-base font-bold bg-white text-gray-800">
         <label class="inline-flex items-center cursor-pointer">
           {{game.completed ? 'Completed' : 'Not completed'}}
           <input type="checkbox" [(ngModel)]="game.completed" (ngModelChange)="updateGame(game)" class="sr-only peer">
@@ -21,7 +43,7 @@
           </div>
         </label>
       </li>
-      <li class="inline-flex items-center gap-x-2.5 py-3 px-4 text-base font-bold bg-white text-gray-800">
+      <li class="flex-grow py-3 text-base font-bold bg-white text-gray-800">
         <label class="inline-flex items-center cursor-pointer">
           Favourite
           <input type="checkbox" class="sr-only peer" [(ngModel)]="game.favourite" (ngModelChange)="updateGame(game)">
@@ -32,7 +54,7 @@
           </svg>
         </label>
       </li>
-      <li class="inline-flex py-3 px-10 text-base font-bold bg-white text-gray-800">
+      <li class="flex-grow py-3 text-base font-bold bg-white text-gray-800">
         <button
           class="bg-red-400 text-white active:bg-red-700 font-bold uppercase px-6 py-3 rounded text-sm outline-none focus:outline-none mr-1 ease-linear transition-colors hover:bg-red-500 duration-300"
           type="button" (click)="removeGame(game)">
