@@ -15,3 +15,7 @@ Finally, launch the front end in the `frontend` directory by first installing th
 `pnpm install`  
 And launch the application with :  
 `pnpm start`
+
+## Demo
+
+https://github.com/Viblanc/spring-angular-keycloak/assets/48864055/08acf2e8-f8d6-4d23-a8f1-84e1bebfe912
