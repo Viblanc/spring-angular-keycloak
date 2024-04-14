@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { KeycloakEventType, KeycloakService } from 'keycloak-angular';
-import { HttpClient } from '@angular/common/http';
+import { KeycloakService } from 'keycloak-angular';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({

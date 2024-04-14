@@ -3,7 +3,7 @@
 This is a simple application made with Spring Boot and Angular. Authentication is taken care of by Keycloak, a popular, open-source user identity and access manager.
 
 ## How to run (in dev mode)
-First, you WILL need an access to the IGDB API. The process is relatively painless and explained [here](https://api-docs.igdb.com/#getting-started). Afterwards, you'll need to set up two environment variables `CLIENT_ID` and `CLIENT_SECRET` before going any further, or setup your IDE to do it for you.
+First, you will need an access to the IGDB API. The process is relatively painless and explained [here](https://api-docs.igdb.com/#getting-started). Afterwards, you'll need to set up two environment variables `CLIENT_ID` and `CLIENT_SECRET` before going any further, or setup your IDE to do it for you.
 
 Start by launching the databases and our Keycloak instance managed with Docker by typing at the project root :  
 `docker compose up -d`  

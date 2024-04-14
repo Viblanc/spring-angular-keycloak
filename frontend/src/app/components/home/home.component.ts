@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { GameService } from '../../services/game.service';
 import { Game } from '../../models/game.model';
@@ -11,7 +11,7 @@ import { ModalComponent } from '../modal/modal.component';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, GameComponent, ModalComponent],
+  imports: [NgFor, NgIf, AsyncPipe, FormsModule, GameComponent, ModalComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
