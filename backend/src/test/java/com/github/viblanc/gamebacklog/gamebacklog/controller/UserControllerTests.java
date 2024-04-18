@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Import;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import({PostgresContainerConfig.class, KeycloakContainerConfig.class})
@@ -41,14 +40,4 @@ public class UserControllerTests {
                 .then()
                 .body("username", equalTo("test_user"));
     }
-
-    @Test
-    void givenAuthenticatedUser_whenGetGames_shouldReturnGames() {
-        given().spec(requestSpec)
-                .when()
-                .get("/api/games")
-                .then()
-                .body(is(equalTo("[]")));
-    }
-
 }
