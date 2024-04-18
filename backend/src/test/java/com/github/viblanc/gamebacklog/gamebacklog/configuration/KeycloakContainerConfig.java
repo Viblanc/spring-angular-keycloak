@@ -12,22 +12,13 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.DynamicPropertyRegistry;
-import org.testcontainers.containers.PostgreSQLContainer;
 
 @TestConfiguration(proxyBeanMethods = false)
-public class TestContainersConfiguration {
-    static final String POSTGRES_IMAGE = "postgres:15-alpine";
+public class KeycloakContainerConfig {
     static final String KEYCLOAK_IMAGE = "quay.io/keycloak/keycloak:24.0.2";
     static final String REALM_NAME = "game-backlog";
-
-    @Bean
-    @ServiceConnection
-    public PostgreSQLContainer<?> postgres() {
-        return new PostgreSQLContainer<>(POSTGRES_IMAGE);
-    }
 
     @Bean
     public KeycloakContainer keycloak(DynamicPropertyRegistry registry) {
@@ -65,18 +56,20 @@ public class TestContainersConfiguration {
         RealmResource realm = keycloakAdmin.realm(REALM_NAME);
         UsersResource users = realm.users();
 
-        // Add user to the realm
-        Response response = users.create(user);
-        String userId = CreatedResponseUtil.getCreatedId(response);
+        if (!users.search("test_user").contains(user)) {
+            // Add user to the realm
+            Response response = users.create(user);
+            String userId = CreatedResponseUtil.getCreatedId(response);
 
-        // Create a password for our user
-        CredentialRepresentation passwordCred = new CredentialRepresentation();
-        passwordCred.setTemporary(false);
-        passwordCred.setType(CredentialRepresentation.PASSWORD);
-        passwordCred.setValue("test_password");
+            // Create a password for our user
+            CredentialRepresentation passwordCred = new CredentialRepresentation();
+            passwordCred.setTemporary(false);
+            passwordCred.setType(CredentialRepresentation.PASSWORD);
+            passwordCred.setValue("test_password");
 
-        // Change user's password
-        UserResource userResource = users.get(userId);
-        userResource.resetPassword(passwordCred);
+            // Change user's password
+            UserResource userResource = users.get(userId);
+            userResource.resetPassword(passwordCred);
+        }
     }
 }
