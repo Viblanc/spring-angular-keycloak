@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: game-backlog
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+jwt:
+  auth:
+    converter:
+      resource-id: gamebacklog-app
+      principal-attribute: preferred_username
+
+app:
+  igdb:
+    clientId: clientId
+    clientSecret: clientSecret

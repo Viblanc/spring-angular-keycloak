@@ -4,19 +4,13 @@ import com.github.viblanc.gamebacklog.gamebacklog.configuration.PostgresContaine
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @Import(PostgresContainerConfig.class)
+@ActiveProfiles("test")
 class GameBacklogApplicationTests {
 	@Test
 	void contextLoads() {
-	}
-
-	@DynamicPropertySource
-	static void registerIGDBApiProperties(DynamicPropertyRegistry registry) {
-		registry.add("app.igdb.clientId", () -> "clientId");
-		registry.add("app.igdb.clientSecret", () -> "clientSecret");
 	}
 }
