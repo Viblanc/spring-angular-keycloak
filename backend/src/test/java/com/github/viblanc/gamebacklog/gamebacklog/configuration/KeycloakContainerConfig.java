@@ -32,6 +32,8 @@ public class KeycloakContainerConfig {
                 () -> keycloak.getAuthServerUrl() + "/realms/" + REALM_NAME + "/protocol/openid-connect/certs");
         registry.add("jwt.auth.converter.resource-id", () -> "gamebacklog-app");
         registry.add("jwt.auth.converter.principal-attribute", () -> "preferred_username");
+        registry.add("app.igdb.clientId", () -> "clientId");
+        registry.add("app.igdb.clientSecret", () -> "clientSecret");
         return keycloak;
     }
 

@@ -10,12 +10,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 @TestConfiguration(proxyBeanMethods = false)
 public class PostgresContainerConfig {
-    @MockBean
-    IGDBApiService igdbApiService;
-
     @Bean
     @ServiceConnection
-    @RestartScope
     public PostgreSQLContainer<?> postgres() {
         return new PostgreSQLContainer<>(POSTGRES_IMAGE);
     }
