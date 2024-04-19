@@ -57,8 +57,9 @@ public class GameControllerTests {
 
     @Test
     public void whenGetGames_RespondWithGames() {
-        User user = UserMother.withGames().build();
-        UserGame userGame = user.getGames().get(0);
+        UserGame userGame = UserGameMother.complete().build();
+        User user = userGame.getUser();
+        user.setGames(List.of(userGame));
 
         when(userService.getUser(user.getUsername())).thenReturn(user);
 
@@ -116,8 +117,9 @@ public class GameControllerTests {
     }
     @Test
     public void whenAddGame_ReturnListOfUserGames() {
-        User user = UserMother.withGames().build();
-        UserGame userGame = user.getGames().get(0);
+        UserGame userGame = UserGameMother.complete().build();
+        User user = userGame.getUser();
+        user.setGames(List.of(userGame));
         Game game = userGame.getGame();
         GameDto gameDto = GameMapper.toDto(game);
 
@@ -142,8 +144,9 @@ public class GameControllerTests {
 
     @Test
     public void whenUpdateGame_ReturnUpdatedGame() {
-        User user = UserMother.withGames().build();
-        UserGame userGame = user.getGames().get(0);
+        UserGame userGame = UserGameMother.complete().build();
+        User user = userGame.getUser();
+        user.setGames(List.of(userGame));
         UserGameDto userGameDto = UserGameMapper.toDto(userGame);
         userGameDto.setCompleted(true);
         userGameDto.setRating(9);
@@ -168,8 +171,9 @@ public class GameControllerTests {
 
     @Test
     public void whenUpdateNonExistingGame_ReturnNotFound() {
-        User user = UserMother.base().build();
         UserGame userGame = UserGameMother.complete().build();
+        User user = userGame.getUser();
+        user.setGames(List.of(userGame));
         UserGameDto userGameDto = UserGameMapper.toDto(userGame);
 
         when(userGameService.findById(any(UserGameId.class))).thenReturn(Optional.empty());
@@ -187,8 +191,9 @@ public class GameControllerTests {
 
     @Test
     public void whenDeleteGame_ReturnNoContent() {
-        User user = UserMother.withGames().build();
-        UserGame userGame = user.getGames().get(0);
+        UserGame userGame = UserGameMother.complete().build();
+        User user = userGame.getUser();
+        user.setGames(List.of(userGame));
 
         when(userService.getUser(user.getUsername())).thenReturn(user);
         when(userGameService.findById(any(UserGameId.class))).thenReturn(Optional.of(userGame));
@@ -204,8 +209,9 @@ public class GameControllerTests {
 
     @Test
     public void whenDeleteNonExistingGame_ReturnNotFound() {
-        User user = UserMother.withGames().build();
-        UserGame userGame = user.getGames().get(0);
+        UserGame userGame = UserGameMother.complete().build();
+        User user = userGame.getUser();
+        user.setGames(List.of(userGame));
 
         when(userService.getUser(user.getUsername())).thenReturn(user);
         when(userGameService.findById(any(UserGameId.class))).thenReturn(Optional.empty());
