@@ -16,7 +16,8 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,36 +28,15 @@ public class IGDBApiService {
     private final String clientId;
     private final String clientSecret;
     private final TwitchAuthenticator authenticator;
-    private final PlatformService platformService;
     private final UserService userService;
 
     public IGDBApiService(@Value("${app.igdb.clientId}") String clientId,
                           @Value("${app.igdb.clientSecret}") String clientSecret,
-                          PlatformService platformService, UserService userService) {
+                          UserService userService) {
         this.authenticator = TwitchAuthenticator.INSTANCE;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
-        this.platformService = platformService;
         this.userService = userService;
-    }
-
-    public List<Platform> findPlatforms() {
-        IGDBWrapper wrapper = IGDBWrapper.INSTANCE;
-        String accessToken =
-                Objects.requireNonNull(authenticator.requestTwitchToken(clientId, clientSecret)).getAccess_token();
-        wrapper.setCredentials(clientId, accessToken);
-        APICalypse apiCalypse = new APICalypse().fields("id,name,alternative_name,abbreviation").limit(500);
-        try {
-            return ProtoRequestKt.platforms(wrapper, apiCalypse).stream().map(platform -> Platform.builder()
-                    .id(platform.getId())
-                    .name(platform.getName())
-                    .alternativeName(platform.getAlternativeName())
-                    .abbreviation(platform.getAbbreviation())
-                    .build()).toList();
-        } catch (RequestException e) {
-            log.error("Request to get platforms failed: {}", e.getStatusCode());
-        }
-        return List.of();
     }
 
     @Retryable(retryFor = RequestException.class, maxAttempts = 2)
@@ -71,18 +51,25 @@ public class IGDBApiService {
                         });
         wrapper.setCredentials(clientId, accessToken);
         APICalypse apicalypse =
-                new APICalypse().fields("id,name,first_release_date,cover.url,summary,platforms;").search(query).limit(12);
+                new APICalypse().fields("id,name,first_release_date,cover.url,summary,platforms.*;").search(query).limit(12);
 
         try {
             return Optional.of(ProtoRequestKt.games(wrapper, apicalypse)
                     .stream()
                     .map(game -> {
-                        Date releaseDate = Date.from(Instant.ofEpochSecond(
-                                game.getFirstReleaseDate().getSeconds(),
-                                game.getFirstReleaseDate().getNanos()));
+                        LocalDate releaseDate =
+                                Instant.ofEpochSecond(game.getFirstReleaseDate().getSeconds())
+                                        .atZone(ZoneId.of("UTC"))
+                                        .toLocalDate();
                         String coverUrl = "https:" + game.getCover().getUrl().replace("thumb", "cover_big_2x");
-                        List<Long> platformsId = game.getPlatformsList().stream().map(proto.Platform::getId).toList();
-                        List<Platform> platforms = platformService.findAllById(platformsId);
+                        List<Platform> platforms = game.getPlatformsList().stream()
+                                .map(platform -> Platform.builder()
+                                        .id(platform.getId())
+                                        .name(platform.getName())
+                                        .alternativeName(platform.getAlternativeName())
+                                        .abbreviation(platform.getAbbreviation())
+                                        .build())
+                                .toList();
                         return (GameMapper.toDto(Game.builder()
                                 .id(game.getId())
                                 .name(game.getName())

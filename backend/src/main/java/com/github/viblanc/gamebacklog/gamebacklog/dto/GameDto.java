@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -16,7 +16,7 @@ import java.util.List;
 public class GameDto {
     private Long id;
     private String name;
-    private Date releaseDate;
+    private LocalDate releaseDate;
     private String coverUrl;
     @Column(columnDefinition = "text")
     private String summary;

@@ -52,8 +52,6 @@ public class GameController {
         String username = principal.getName();
         User currentUser = userService.getUser(username);
         Game game = GameMapper.fromDto(gameDto);
-        if (!gameService.existsById(gameDto.getId()))
-            gameService.save(game);
         UserGame userGame = UserGame.builder()
                 .id(new UserGameId(username, gameDto.getId()))
                 .user(currentUser)

@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -19,11 +19,15 @@ public class Game {
     @Id
     private Long id;
     private String name;
-    private Date releaseDate;
+    @Column(columnDefinition = "DATE")
+    private LocalDate releaseDate;
     private String coverUrl;
     @Column(columnDefinition = "text", length = 2048)
     private String summary;
-    @ManyToMany
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     @JoinTable(
             name = "game_platform",
             joinColumns = @JoinColumn(name = "game_id"),

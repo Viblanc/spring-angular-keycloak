@@ -20,6 +20,6 @@ public class Platform {
     private String name;
     private String alternativeName;
     private String abbreviation;
-    @ManyToMany(mappedBy = "platforms")
+    @ManyToMany(mappedBy = "platforms", fetch = FetchType.LAZY)
     private List<Game> games;
 }

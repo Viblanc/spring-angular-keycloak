@@ -42,7 +42,7 @@ public class GameControllerTests {
     private MockMvc mvc;
     @MockBean
     private UserService userService;
-    @Autowired
+    @MockBean
     private IGDBApiService igdbApiService;
     @MockBean
     private GameService gameService;

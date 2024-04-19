@@ -18,7 +18,7 @@ public class UserGame {
     @ManyToOne
     @MapsId("username")
     private User user;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("gameId")
     private Game game;
     private boolean completed;
