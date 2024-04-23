@@ -3,6 +3,7 @@ package com.github.viblanc.gamebacklog.gamebacklog.controller;
 import com.github.viblanc.gamebacklog.gamebacklog.configuration.PostgresContainerConfig;
 import com.github.viblanc.gamebacklog.gamebacklog.dto.GameDto;
 import com.github.viblanc.gamebacklog.gamebacklog.dto.UserGameDto;
+import com.github.viblanc.gamebacklog.gamebacklog.exception.SearchRequestException;
 import com.github.viblanc.gamebacklog.gamebacklog.mapper.GameMapper;
 import com.github.viblanc.gamebacklog.gamebacklog.mapper.UserGameMapper;
 import com.github.viblanc.gamebacklog.gamebacklog.model.Game;
@@ -24,6 +25,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Optional;
@@ -84,7 +86,7 @@ public class GameControllerTests {
         String query = game.getName();
 
         when(userService.getUser(user.getUsername())).thenReturn(user);
-        when(igdbApiService.searchGames(eq(user), anyString())).thenReturn(Optional.of(List.of(gameDto)));
+        when(igdbApiService.searchGames(eq(user), anyString())).thenReturn(Flux.just(gameDto));
 
         given()
                 .auth().with(jwt().jwt(jwt -> jwt.subject(user.getUsername()).build()))
@@ -105,7 +107,7 @@ public class GameControllerTests {
         User user = UserMother.base().build();
 
         when(userService.getUser(user.getUsername())).thenReturn(user);
-        when(igdbApiService.searchGames(eq(user), anyString())).thenReturn(Optional.empty());
+        when(igdbApiService.searchGames(eq(user), anyString())).thenReturn(Flux.error(new SearchRequestException(new Throwable())));
 
         given()
                 .auth().with(jwt().jwt(jwt -> jwt.subject(user.getUsername()).build()))
@@ -115,6 +117,7 @@ public class GameControllerTests {
                 .then()
                 .status(HttpStatus.BAD_GATEWAY);
     }
+
     @Test
     public void whenAddGame_ReturnListOfUserGames() {
         UserGame userGame = UserGameMother.complete().build();

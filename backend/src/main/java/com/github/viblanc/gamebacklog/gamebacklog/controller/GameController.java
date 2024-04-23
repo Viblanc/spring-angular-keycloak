@@ -8,7 +8,6 @@ import com.github.viblanc.gamebacklog.gamebacklog.mapper.UserMapper;
 import com.github.viblanc.gamebacklog.gamebacklog.model.User;
 import com.github.viblanc.gamebacklog.gamebacklog.model.UserGame;
 import com.github.viblanc.gamebacklog.gamebacklog.model.UserGameId;
-import com.github.viblanc.gamebacklog.gamebacklog.service.GameService;
 import com.github.viblanc.gamebacklog.gamebacklog.service.IGDBApiService;
 import com.github.viblanc.gamebacklog.gamebacklog.model.Game;
 import com.github.viblanc.gamebacklog.gamebacklog.service.UserGameService;
@@ -18,17 +17,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/games")
 @RequiredArgsConstructor
 public class GameController {
     private final UserService userService;
-    private final GameService gameService;
     private final UserGameService userGameService;
     private final IGDBApiService igdbApiService;
 
@@ -40,11 +38,14 @@ public class GameController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<GameDto>> searchGames(Principal principal, @RequestParam String query) {
+    public ResponseEntity<?> searchGames(Principal principal, @RequestParam String query) {
         String username = principal.getName();
         User user = userService.getUser(username);
-        Optional<List<GameDto>> games = igdbApiService.searchGames(user, query);
-        return games.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_GATEWAY).build());
+        return igdbApiService.searchGames(user, query)
+                .collectList()
+                .map(ResponseEntity::ok)
+                .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.BAD_GATEWAY).build()))
+                .block();
     }
 
     @PostMapping("/add")
