@@ -13,12 +13,12 @@ export class AuthService {
     this.isLoggedIn();
   }
 
-  login(): void {
-    this.keycloak.login();
+  login(): Promise<void> {
+    return this.keycloak.login();
   }
 
-  logout(): void {
-    this.keycloak.logout();
+  logout(): Promise<void> {
+    return this.keycloak.logout();
   }
 
   getUsername(): void {

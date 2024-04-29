@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:9000/api',
+  apiUrl: 'http://backend:9000/api',
+  keycloakUrl: 'http://keycloak:8080',
 };
