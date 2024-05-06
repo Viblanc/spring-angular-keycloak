@@ -30,9 +30,8 @@ public class GameController {
     private final UserGameService userGameService;
     private final IGDBApiService igdbApiService;
 
-    @GetMapping
-    public ResponseEntity<List<UserGameDto>> findGames(Principal principal) {
-        String username = principal.getName();
+    @GetMapping("/{username}")
+    public ResponseEntity<List<UserGameDto>> findGames(@PathVariable String username) {
         User user = userService.getUser(username);
         return ResponseEntity.ok(UserMapper.toDto(user).getGames());
     }

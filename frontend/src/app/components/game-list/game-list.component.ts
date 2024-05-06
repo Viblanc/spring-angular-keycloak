@@ -1,9 +1,10 @@
-import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { Component, Input, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { GameService } from '../../services/game.service';
-import { NgFor } from '@angular/common';
+import { CommonModule, NgFor } from '@angular/common';
 import { UserGame } from '../../models/user-game.model';
 import { FormsModule } from '@angular/forms';
 import { GameComponent } from '../game/game.component';
+import { AuthService } from '../../services/auth.service';
 
 @Pipe({
   name: 'rangeNumber',
@@ -24,7 +25,7 @@ enum Selection {
 @Component({
   selector: 'app-game-list',
   standalone: true,
-  imports: [NgFor, FormsModule, GameComponent, RangeNumber],
+  imports: [NgFor, FormsModule, CommonModule, GameComponent, RangeNumber],
   templateUrl: './game-list.component.html',
   styleUrl: './game-list.component.css',
 })
@@ -32,10 +33,15 @@ export class GameListComponent implements OnInit {
   games: UserGame[] = [];
   selectedGames: UserGame[] = [];
   selection: typeof Selection = Selection;
-  constructor(private gameService: GameService) {}
+  @Input() username = '';
+
+  constructor(
+    private gameService: GameService,
+    protected readonly authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.gameService.getGames().subscribe({
+    this.gameService.getGames(this.username).subscribe({
       next: (games) => {
         this.games = games.sort((a, b) => {
           if (a.game.name! > b.game.name!) {

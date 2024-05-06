@@ -2,10 +2,12 @@ package com.github.viblanc.gamebacklog.gamebacklog.service;
 
 import com.github.viblanc.gamebacklog.gamebacklog.exception.UserNotFoundException;
 import com.github.viblanc.gamebacklog.gamebacklog.model.User;
+import com.github.viblanc.gamebacklog.gamebacklog.model.UserGame;
 import com.github.viblanc.gamebacklog.gamebacklog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,5 +27,9 @@ public class UserService {
 
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    public List<User> findByUsernameStartsWith(String username) {
+        return userRepository.findByUsernameStartsWith(username);
     }
 }

@@ -26,6 +26,7 @@
         <div class="inline-flex items-center">
           <label for="countries" class="px-2">Rating:</label>
           <select id="countries" [(ngModel)]="game.rating" (ngModelChange)="updateGame(game)"
+            [disabled]="this.username !== (this.authService.username$ | async)"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
             @for (rating of 10 | rangeNumber; track rating) {
             <option [ngValue]="rating" [selected]="rating === game.rating">{{rating}}</option>
@@ -37,7 +38,8 @@
       <li class="flex-grow py-3 text-base font-bold bg-white text-gray-800">
         <label class="inline-flex items-center cursor-pointer">
           {{game.completed ? 'Completed' : 'Not completed'}}
-          <input type="checkbox" [(ngModel)]="game.completed" (ngModelChange)="updateGame(game)" class="sr-only peer">
+          <input type="checkbox" [(ngModel)]="game.completed" (ngModelChange)="updateGame(game)"
+            [disabled]="this.username !== (this.authService.username$ | async)" class="sr-only peer">
           <div
             class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 mx-1">
           </div>
@@ -46,7 +48,8 @@
       <li class="flex-grow py-3 text-base font-bold bg-white text-gray-800">
         <label class="inline-flex items-center cursor-pointer">
           Favourite
-          <input type="checkbox" class="sr-only peer" [(ngModel)]="game.favourite" (ngModelChange)="updateGame(game)">
+          <input type="checkbox" class="sr-only peer" [(ngModel)]="game.favourite" (ngModelChange)="updateGame(game)"
+            [disabled]="this.username !== (this.authService.username$ | async)">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
             class="w-8 h-auto stroke-amber-300 fill-white hover:fill-amber-300 peer-checked:fill-amber-300 transition-all ease-in-out duration-300">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -54,7 +57,8 @@
           </svg>
         </label>
       </li>
-      <li class="flex-grow py-3 text-base font-bold bg-white text-gray-800">
+      <li class="flex-grow py-3 text-base font-bold bg-white text-gray-800"
+        *ngIf="this.username === (this.authService.username$ | async)">
         <button
           class="bg-red-400 text-white active:bg-red-700 font-bold uppercase px-6 py-3 rounded text-sm outline-none focus:outline-none mr-1 ease-linear transition-colors hover:bg-red-500 duration-300"
           type="button" (click)="removeGame(game)">

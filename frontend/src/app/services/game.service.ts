@@ -14,8 +14,8 @@ export class GameService {
     this.apiUrl = environment.apiUrl;
   }
 
-  getGames(): Observable<UserGame[]> {
-    return this.http.get<UserGame[]>(`${this.apiUrl}/games`);
+  getGames(username: string): Observable<UserGame[]> {
+    return this.http.get<UserGame[]>(`${this.apiUrl}/games/${username}`);
   }
 
   search(query: string): Observable<Game[]> {

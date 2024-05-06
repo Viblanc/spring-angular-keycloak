@@ -34,6 +34,6 @@ public class Game {
             inverseJoinColumns = @JoinColumn(name = "platform_id")
     )
     private List<Platform> platforms;
-    @OneToMany(mappedBy = "game", orphanRemoval = true)
+    @OneToMany(mappedBy = "game")
     private List<UserGame> users;
 }

@@ -34,7 +34,8 @@
             class="block py-2 px-3 text-white rounded hover:text-blue-500 md:bg-transparent md:p-0">Home</a>
         </li>
         <li>
-          <a *ngIf="authService.isLoggedIn$ | async" routerLink="mygames" routerLinkActive="active-link"
+          <a *ngIf="authService.isLoggedIn$ | async" [routerLink]="['/games', authService.username$ | async]"
+            routerLinkActive="active-link"
             class="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent hover:text-blue-500 md:p-0">
             My Games</a>
         </li>
