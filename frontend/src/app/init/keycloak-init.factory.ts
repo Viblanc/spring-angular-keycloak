@@ -30,6 +30,7 @@ export function initializeKeycloak(
       bearerExcludedUrls: ['/assets'],
       loadUserProfileAtStartUp: true,
       initOptions: {
+        redirectUri: environment.url + '/home',
         pkceMethod: 'S256',
         onLoad: 'check-sso',
         silentCheckSsoRedirectUri:
