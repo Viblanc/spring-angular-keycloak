@@ -41,18 +41,27 @@ export class GameListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.gameService.getGames(this.username).subscribe({
-      next: (games) => {
-        this.games = games.sort((a, b) => {
-          if (a.game.name! > b.game.name!) {
-            return 1;
-          } else if (b.game.name! > a.game.name!) {
-            return -1;
-          } else {
-            return 0;
-          }
-        });
-        this.selectedGames = this.games;
+    this.authService.isLoggedIn$.subscribe({
+      next: (loggedIn) => {
+        if (loggedIn) {
+          this.gameService.getGames(this.username).subscribe({
+            next: (games) => {
+              this.games = games.sort((a, b) => {
+                if (a.game.name! > b.game.name!) {
+                  return 1;
+                } else if (b.game.name! > a.game.name!) {
+                  return -1;
+                } else {
+                  return 0;
+                }
+              });
+              this.selectedGames = this.games;
+            },
+            error: (err) => {
+              console.error(err);
+            },
+          });
+        }
       },
       error: (err) => {
         console.error(err);
