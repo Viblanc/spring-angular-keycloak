@@ -20,7 +20,8 @@
     <div class="flex md:order-2 space-x-3 rtl:space-x-reverse">
       <div class="px-2 rounded-md bg-gray-50 border flex focus-within:border-gray-300 text-sm">
         <input type="text" placeholder="Search users..."
-          class="bg-transparent focus:outline-none font-semibold border-0 focus:ring-0">
+          class="bg-transparent focus:outline-none font-semibold border-0 focus:ring-0" [(ngModel)]="username"
+          (keyup)="search()">
       </div>
 
       <span *ngIf="authService.isLoggedIn$ | async"

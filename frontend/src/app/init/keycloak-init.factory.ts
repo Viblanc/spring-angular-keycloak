@@ -6,7 +6,7 @@ export function initializeKeycloak(
   keycloak: KeycloakService,
   http: HttpClient
 ) {
-  const { apiUrl, keycloakUrl } = environment;
+  const { url, apiUrl, keycloakUrl } = environment;
   return () => {
     keycloak.keycloakEvents$.subscribe({
       next: (event) => {
@@ -30,7 +30,7 @@ export function initializeKeycloak(
       bearerExcludedUrls: ['/assets'],
       loadUserProfileAtStartUp: true,
       initOptions: {
-        redirectUri: environment.url + '/home',
+        redirectUri: url + '/home',
         pkceMethod: 'S256',
         onLoad: 'check-sso',
         silentCheckSsoRedirectUri:
