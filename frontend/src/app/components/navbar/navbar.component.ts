@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import {
+  Subject,
+  debounceTime,
+  distinctUntilChanged,
+  of,
+  switchMap,
+} from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { FormsModule } from '@angular/forms';
 
@@ -20,7 +26,8 @@ export class NavbarComponent implements OnInit {
   private username$ = new Subject<string>();
   constructor(
     protected readonly authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -32,11 +39,12 @@ export class NavbarComponent implements OnInit {
           this.isLoading = true;
           if (username.trim().length > 2)
             return this.userService.search(username);
-          else return [];
+          else return of([]);
         })
       )
       .subscribe({
         next: (users) => {
+          this.isLoading = false;
           this.users = users;
         },
         error: (err) => {
@@ -47,5 +55,10 @@ export class NavbarComponent implements OnInit {
 
   search(): void {
     this.username$.next(this.username);
+  }
+
+  gotoUserProfile(user: string) {
+    this.users = [];
+    this.router.navigate(['/games', user]);
   }
 }

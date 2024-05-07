@@ -32,6 +32,6 @@ public class UserController {
 
     @GetMapping("/search")
     public List<String> searchUsers(Principal principal, @RequestParam String username) {
-        return userService.findByUsernameStartsWith(username).stream().map(User::getUsername).limit(10).toList();
+        return userService.findByUsernameStartsWith(username).stream().map(User::getUsername).limit(8).toList();
     }
 }
