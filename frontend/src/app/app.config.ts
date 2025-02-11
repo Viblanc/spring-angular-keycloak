@@ -1,30 +1,47 @@
-import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
+import { ApplicationConfig } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
-import { KeycloakService, KeycloakBearerInterceptor } from 'keycloak-angular';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { initializeKeycloak } from './init/keycloak-init.factory';
-import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import {
+  provideKeycloak,
+  createInterceptorCondition,
+  IncludeBearerTokenCondition,
+  INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+  includeBearerTokenInterceptor,
+} from 'keycloak-angular';
+import { environment } from '../environments/environment';
+
+const urlCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
+  urlPattern: /^(http:\/\/localhost:9000)(\/.*)?$/i,
+  bearerPrefix: 'Bearer',
+});
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideKeycloak({
+      config: {
+        url: environment.keycloakUrl,
+        realm: 'game-backlog',
+        clientId: 'gamebacklog-app',
+      },
+      initOptions: {
+        redirectUri: environment.url + '/home',
+        pkceMethod: 'S256',
+        onLoad: 'check-sso',
+        silentCheckSsoRedirectUri:
+          window.location.origin + '/assets/silent-check-sso.html',
+      },
+      providers: [
+        {
+          provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+          useValue: [urlCondition],
+        },
+      ],
+    }),
     provideRouter(routes, withComponentInputBinding()),
     provideAnimationsAsync(),
-    KeycloakService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeKeycloak,
-      multi: true,
-      deps: [KeycloakService, HttpClient],
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: KeycloakBearerInterceptor,
-      multi: true,
-    },
-    provideHttpClient(
-      withInterceptorsFromDi() // tell httpClient to use interceptors from DI
-    ),
+    provideHttpClient(withInterceptors([includeBearerTokenInterceptor])),
   ],
 };

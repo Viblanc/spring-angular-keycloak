@@ -20,7 +20,7 @@ public class UserService {
     }
 
     public User getUser(String username) {
-        return findById(username).orElseThrow(() -> new UserNotFoundException(username));
+        return findById(username).orElse(save(new User(username)));
     }
 
     public boolean existsById(String username) { return userRepository.existsById(username); }

@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
+import { Injectable, inject } from '@angular/core';
+import Keycloak from 'keycloak-js';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -8,7 +8,8 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthService {
   isLoggedIn$ = new BehaviorSubject<boolean>(false);
   username$ = new BehaviorSubject<string>('');
-  constructor(private readonly keycloak: KeycloakService) {
+  private readonly keycloak = inject(Keycloak);
+  constructor() {
     this.getUsername();
     this.isLoggedIn();
   }
@@ -23,16 +24,25 @@ export class AuthService {
 
   getUsername(): void {
     this.isLoggedIn$.subscribe({
-      next: (val) => {
-        if (val) {
-          this.username$.next(this.keycloak.getUsername());
+      next: (loggedIn) => {
+        if (loggedIn) {
+          this.keycloak.loadUserProfile().then(
+            (profile) => {
+              this.username$.next(profile.username!);
+            },
+            (err) => {
+              console.log(err);
+            }
+          );
+          this.username$.next(this.keycloak.profile?.username!);
         }
       },
     });
   }
 
   isLoggedIn(): boolean {
-    this.isLoggedIn$.next(this.keycloak.isLoggedIn());
-    return this.keycloak.isLoggedIn();
+    const res = this.keycloak.authenticated ?? false;
+    this.isLoggedIn$.next(res);
+    return res;
   }
 }

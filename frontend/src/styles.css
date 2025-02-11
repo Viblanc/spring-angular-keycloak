@@ -1,10 +1,35 @@
-/* You can add global styles to this file, and also import other style files */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer components {
   .active-link {
     @apply font-bold !text-blue-500;
+  }
+}
+
+@theme {
+  --animate-slide-in: slide-in 0.3s ease-in;
+
+  @keyframes slide-in {
+    0% {
+      transform: translateY(10%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  --animate-slide-out: slide-in 0.2s linear;
+
+  @keyframes slide-out {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(10%);
+      opacity: 0;
+    }
   }
 }
