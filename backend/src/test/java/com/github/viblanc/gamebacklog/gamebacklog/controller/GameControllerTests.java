@@ -68,7 +68,7 @@ public class GameControllerTests {
         given()
                 .auth().with(jwt().jwt(jwt -> jwt.subject(user.getUsername()).build()))
                 .when()
-                .get()
+                .get("/" + user.getUsername())
                 .then()
                 .status(HttpStatus.OK)
                 .body("size()", equalTo(1))

@@ -1,8 +1,6 @@
 package com.github.viblanc.gamebacklog.gamebacklog.service;
 
-import com.github.viblanc.gamebacklog.gamebacklog.exception.UserNotFoundException;
 import com.github.viblanc.gamebacklog.gamebacklog.model.User;
-import com.github.viblanc.gamebacklog.gamebacklog.model.UserGame;
 import com.github.viblanc.gamebacklog.gamebacklog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
